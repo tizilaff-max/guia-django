@@ -17,6 +17,4 @@ class Producto(models.Model):
     def __str__(self):
         return self.nombre
     
-class Carrito(models.Model):
-    carrito = models.CharField(max_length=50)
 
