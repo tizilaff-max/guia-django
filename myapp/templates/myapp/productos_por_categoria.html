@@ -1,10 +1,7 @@
-<h3>Productos en {{ categoria.titulo }}</h3>
+<h1>Productos de {{ categoria.titulo }}</h1>
 
 <ul>
   {% for producto in productos %}
-    <li>{{ producto.nombre }} - {{ producto.precio }}</li>
+    <li>{{ producto.nombre }} – ${{ producto.precio }}</li>
   {% endfor %}
 </ul>
-
-<a href="{% url 'inicio' %}">Volver al inicio</a>
-

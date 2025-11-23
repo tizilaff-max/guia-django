@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Catalogo, Producto
 from django.http import HttpResponse
 
@@ -26,23 +26,32 @@ def lista_productos(request):
 
 
 
-def crear_catalogo(request, titulo, contenido):
-    nuevo = Catalogo.objects.create(
-        titulo=titulo,
-        contenido=contenido
-    )
-    return HttpResponse(f"Catalogo creado: {nuevo.titulo}")
+
+def crear_catalogo_view(request):
+    if request.method == "POST":
+        titulo = request.POST.get("titulo")
+        contenido = request.POST.get("contenido")
+
+        Catalogo.objects.create(titulo=titulo, contenido=contenido)
+        return redirect('inicio')
+
+    return render(request, "myapp/crear_catalogo.html")
 
 
-def crear_producto(request, nombre, precio, id_categoria):
-    try:
-        categoria = Catalogo.objects.get(id=id_categoria)
-    except Catalogo.DoesNotExist:
-        return HttpResponse("La categoria no existe, no se puede crear el producto.")
+def crear_producto_view(request):
+    categorias = Catalogo.objects.all()
 
-    prod = Producto.objects.create(
-        nombre=nombre,
-        precio=precio,
-        categoria=categoria
-    )
-    return HttpResponse(f"Producto creado: {prod.nombre}")
+    if request.method == "POST":
+        nombre = request.POST.get("nombre")
+        precio = request.POST.get("precio")
+        categoria_id = request.POST.get("categoria")
+
+        categoria = Catalogo.objects.get(id=categoria_id)
+        Producto.objects.create(
+            nombre=nombre,
+            precio=precio,
+            categoria=categoria
+        )
+        return redirect('lista_productos')
+
+    return render(request, "myapp/crear_producto.html", {"categorias": categorias})
